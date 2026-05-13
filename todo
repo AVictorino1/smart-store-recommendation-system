@@ -1,0 +1,16 @@
+
+
+ML MODEL 
+Preprocessing
+- One hot encoding string characters DONE
+- Normalize all data with scikit learn (pipeline and transforms) DONE
+- cosine similarity DONE
+- Make a score ranking for number categories (prices) DONE
+- Add categories to the data (text categories) DONE
+- Add prices and brands
+- Add variants, synonyms, natural expressions to NAME, DESCRIPTION, TAGS (Use claude api?) 
+- Apply TF-IDF to string categories
+- Apply embeddings
+
+
+
