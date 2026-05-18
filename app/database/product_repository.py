@@ -1,15 +1,10 @@
 import sqlite3
 from app.database.connection import get_connection
-
+from app.database.init_db import generate_item
+from app.models import Product, ProductUpdate
 
 def map_product(row):
-    return {
-        "id": row[0],
-        "name": row[1],
-        "price": row[2],
-        "category": row[3],
-        "brand": row[4]
-    }
+    return dict(row)
 
 def get_all_products():
     conn = get_connection()
@@ -73,32 +68,32 @@ def delete_product_r(product_id):
 
     return True
 
-def new_product_r(product):
+def new_product_r(product: Product):
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("INSERT INTO products (name, price, category, brand) VALUES (?,?,?,?)",
-                    (product.name, product.price, product.category, product.brand))
+    product_dict = product.model_dump()
+
+    columns = ", ".join(product_dict.keys())
+    placeholders = ", ".join("?" * len(product_dict)) 
+
+    values = tuple(product_dict.values())
+    cursor.execute(f"""INSERT INTO products ({columns}) VALUES ({placeholders})""",
+                    (values))
     conn.commit()
 
     new_id = cursor.lastrowid
+    new_product = get_one_product(new_id)
     conn.close()
 
     
-    new_product = {
-        "id" : new_id,
-        "name": product.name,
-        "price": product.price,
-        "category": product.category,
-        "brand": product.brand
-    }
 
     return new_product
 
-def update_product_r(product_id, updated_product):
+def update_product_r(product_id, updated_product: ProductUpdate):
     conn = get_connection()
     cursor = conn.cursor()
-
+    
     cursor.execute("SELECT * FROM products WHERE id = ?", (product_id,))
     row = cursor.fetchone()
 
@@ -106,22 +101,52 @@ def update_product_r(product_id, updated_product):
         conn.close()
         return None
     
+    product_dict = updated_product.model_dump()
 
-    cursor.execute("UPDATE products SET name = ?, price = ?, category = ?, brand = ? WHERE id = ?",
-                    (updated_product.name,
-                     updated_product.price,
-                     updated_product.category,
-                     updated_product.brand,
-                     product_id))
+    columns = ", ".join([f"{column} = ? "for column in product_dict.keys()])
+    values = tuple(product_dict.values())
     
+    query = f"""UPDATE products SET {columns} WHERE id = ?"""
+    cursor.execute(query, (values + (product_id, )))
+    
+
     conn.commit()
+
+    cursor.execute("SELECT * FROM products WHERE id = ?", (product_id,))
+    updated = cursor.fetchone()
+
     conn.close()
 
-    return {
-        "id" : product_id,
-        "name" : updated_product.name,
-        "price" : updated_product.price,
-        "category": updated_product.category,
-        "brand": updated_product.brand
-    }
+    return map_product(updated)
+
+def update_product_partial(product_id, updated_product: ProductUpdate):
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT * FROM products WHERE id = ?", (product_id,))
+    row = cursor.fetchone()
+
+    if not row:
+        conn.close()
+        return None
+    
+    product_dict = updated_product.model_dump(exclude_unset=True)
+
+    columns = ", ".join([f"{column} = ? "for column in product_dict.keys()])
+    values = tuple(product_dict.values())
+    
+    query = f"""UPDATE products SET {columns} WHERE id = ?"""
+    cursor.execute(query, (values + (product_id, )))
+    
+
+    conn.commit()
+
+    cursor.execute("SELECT * FROM products WHERE id = ?", (product_id,))
+    updated = cursor.fetchone()
+
+    conn.close()
+
+    return map_product(updated)
+
+    
 

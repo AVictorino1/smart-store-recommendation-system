@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.models import Product
+from app.models import Product, ProductUpdate
 import app.services.product_service 
 
 router = APIRouter()
@@ -31,5 +31,10 @@ async def delete_product(product_id: int):
 
 
 @router.put("/products/{product_id}")
-async def update_product(product_id: int, updated_product: Product):
+async def update_product(product_id: int, updated_product: ProductUpdate):
     return app.services.product_service.update_product(product_id, updated_product)
+
+
+@router.patch("/products/{product_id}")
+async def update_product(product_id: int, updated_product: ProductUpdate):
+    return app.services.product_service.update_product_partial_s(product_id, updated_product)

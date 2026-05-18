@@ -5,6 +5,7 @@ from app.database.product_repository import get_one_product
 from app.database.product_repository import delete_product_r
 from app.database.product_repository import new_product_r
 from app.database.product_repository import update_product_r
+from app.database.product_repository import update_product_partial
 
 from app.core.exceptions import NotFoundError
 
@@ -37,5 +38,14 @@ def update_product(product_id, updated_product):
         raise NotFoundError("Product not found")
 
     return prod
+
+
+def update_product_partial_s(product_id, updated_product):
+    prod = update_product_partial(product_id, updated_product)
+    if prod == None:
+        raise NotFoundError("Product not found")
+
+    return prod
+
 
 

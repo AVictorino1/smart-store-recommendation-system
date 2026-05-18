@@ -1,4 +1,7 @@
-
+RULED BASED
+- Review
+- Add weights to certain categories? But trying not to hardcode 
+- Should be based on the business model
 
 ML MODEL 
 Preprocessing
@@ -7,10 +10,33 @@ Preprocessing
 - cosine similarity DONE
 - Make a score ranking for number categories (prices) DONE
 - Add categories to the data (text categories) DONE
-- Add prices and brands
-- Add variants, synonyms, natural expressions to NAME, DESCRIPTION, TAGS (Use claude api?) 
+- Add prices and brands (they must be dependant on eachother) DONE
+- Add variants, synonyms, natural expressions to NAME, DESCRIPTION, TAGS (Use claude api?)  DONE
+- Finish product_repository adaptations DONE
+- Adapt all files to new database (generalize, don't harcode) DONE
+
 - Apply TF-IDF to string categories
 - Apply embeddings
+- Apply permissions? if possible
 
 
+CNN MODEL
+- start
+
+FRONT END
+- start
+- AUTH?
+
+WHATSAPP API
+- start
+
+NEW IDEA: Ml model that gives suggested values (based on the database) when the user is creating a new product
+
+ALL THE APP
+- Raise errors
+- Error handling 
+- Input validation
+- Data validation
+- Edge cases
+- Defensive programming
 

@@ -5,11 +5,12 @@ from sklearn.metrics.pairwise import cosine_similarity
 from app.services.product_service import get_products
 from app.services.product_service import get_product_id
 from app.recommender.rule_based import best_recommendations
+from app.models import Product
 import numpy
 import pandas as pd
 
 def main():
-    product_id = 1
+    product_id = 3
     df, processed, pipeline = preprocess_database(get_products())
     product_index = df.index[df["id"] == product_id][0]
     k = 4
@@ -33,7 +34,8 @@ def preprocess_database(database):
 
     df = pd.DataFrame(database)
     
-    string_columns = ["name", "category","brand"]
+    string_columns = list(Product.model_fields.keys())
+    
     num_columns = ["price"]
 
     
