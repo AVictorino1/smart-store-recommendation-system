@@ -1,0 +1,14 @@
+fastapi
+groq
+sqlite3
+random
+os
+json
+time
+typing
+pydantic
+pandas
+numpy
+sklearn
+huggingface_hub
+cohere

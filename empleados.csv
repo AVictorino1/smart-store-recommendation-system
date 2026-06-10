@@ -1,0 +1,26 @@
+empleado_id,nombre,apellido,email,cargo,fecha_contratacion
+1,Juan,Pérez,juan.perez@example.com,Administrador,2020-01-01
+2,María,García,maria.garcia@example.com,Atención al cliente,2020-02-01
+3,Carlos,López,carlos.lopez@example.com,Encargado de inventario,2020-03-01
+4,Ana,Díaz,ana.diaz@example.com,Empaquetador,2020-04-01
+5,Pedro,Martínez,pedro.martinez@example.com,Analista de marketing,2020-05-01
+6,Eva,Sánchez,eva.sanchez@example.com,Supervisor logístico,2020-06-01
+7,Rafael,Torres,rafael.torres@example.com,Administrador,2020-07-01
+8,Sofía,Ramos,sofia.ramos@example.com,Atención al cliente,2020-08-01
+9,Alejandro,Cruz,alejandro.cruz@example.com,Encargado de inventario,2020-09-01
+10,Isabel,Morales,isabel.morales@example.com,Empaquetador,2020-10-01
+11,Miguel,Gómez,miguel.gomez@example.com,Analista de marketing,2020-11-01
+12,Laura,Hernández,laura.hernandez@example.com,Supervisor logístico,2020-12-01
+13,Javier,López,javier.lopez@example.com,Administrador,2021-01-01
+14,Cristina,García,cristina.garcia@example.com,Atención al cliente,2021-02-01
+15,Daniel,Díaz,daniel.diaz@example.com,Encargado de inventario,2021-03-01
+16,Elena,Sánchez,elena.sanchez@example.com,Empaquetador,2021-04-01
+17,Francisco,Torres,francisco.torres@example.com,Analista de marketing,2021-05-01
+18,Gabriel,Ramos,gabriel.ramos@example.com,Supervisor logístico,2021-06-01
+19,Hugo,Cruz,hugo.cruz@example.com,Administrador,2021-07-01
+20,Inés,Morales,ines.morales@example.com,Atención al cliente,2021-08-01
+21,Julio,Gómez,julio.gomez@example.com,Encargado de inventario,2021-09-01
+22,Karen,Hernández,karen.hernandez@example.com,Empaquetador,2021-10-01
+23,Luciano,López,luciano.lopez@example.com,Analista de marketing,2021-11-01
+24,Marina,García,marina.garcia@example.com,Supervisor logístico,2021-12-01
+25,Nicolás,Díaz,nicolas.diaz@example.com,Administrador,2022-01-01

@@ -6,10 +6,17 @@ from app.services.product_service import get_products
 from app.services.product_service import get_product_id
 from app.recommender.rule_based import best_recommendations
 from app.models import Product
+from app.database.init_db import db_categories
+import os
+from dotenv import load_dotenv
+import huggingface_hub
 import numpy
 import pandas as pd
 
 def main():
+    load_dotenv()
+    hugging_face_key = os.getenv("HUGGING_FACE_API_KEY")
+    client = huggingface_hub.InferenceClient()
     product_id = 3
     df, processed, pipeline = preprocess_database(get_products())
     product_index = df.index[df["id"] == product_id][0]
@@ -35,13 +42,15 @@ def preprocess_database(database):
     df = pd.DataFrame(database)
     
     string_columns = list(Product.model_fields.keys())
+    string_columns_simple = [x for x in string_columns if x not in ["name","tags","description"]]
+    string_columns_complex = ["name","tags","description"]
     
     num_columns = ["price"]
 
     
     preprocessor = ColumnTransformer(
         transformers=[
-            ("string", OneHotEncoder(handle_unknown="ignore"), string_columns)
+            ("string", OneHotEncoder(handle_unknown="ignore"), string_columns_simple)
         ])
     pipeline = Pipeline(steps=[("preprocessor", preprocessor)])
     

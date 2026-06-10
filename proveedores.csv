@@ -1,0 +1,11 @@
+proveedor_id,nombre,telefono,email
+1,Proveedor 1,555-1234,proveedor1@example.com
+2,Proveedor 2,555-5678,proveedor2@example.com
+3,Proveedor 3,555-9012,proveedor3@example.com
+4,Proveedor 4,555-1111,proveedor4@example.com
+5,Proveedor 5,555-2222,proveedor5@example.com
+6,Proveedor 6,555-3333,proveedor6@example.com
+7,Proveedor 7,555-4444,proveedor7@example.com
+8,Proveedor 8,555-5555,proveedor8@example.com
+9,Proveedor 9,555-6666,proveedor9@example.com
+10,Proveedor 10,555-7777,proveedor10@example.com

@@ -10,6 +10,7 @@ api_k = os.getenv("GROQ_API_KEY")
 client = Groq(api_key=api_k)
 
 """
+models: llama-3.3-70b-versatile, llama-3.1-8b-instant
 def main():
     products = get_all_products()
     complete_item(products)
@@ -52,7 +53,7 @@ def generate_complex_strings(item: dict) -> dict:
     """
 
     response = client.chat.completions.create(
-        model="llama-3.1-8b-instant",
+        model="llama-3.3-70b-versatile",
         messages=[{
                         "role": "system",
                         "content":"""Eres un redactor creativo especializado en moda urbana y comercial.
@@ -81,10 +82,14 @@ def generate_complex_strings(item: dict) -> dict:
     except json.JSONDecodeError:
         print(f"Invalid JSON in the item:", texto)
         campos = {"name": None, "tags": [], "description": None}
-    
-    item["name"] = campos["name"]
-    item["tags"] = campos["tags"]
-    item["description"] = campos["description"]
+
+    try:
+        item["name"] = campos["name"]
+        item["tags"] = campos["tags"]
+        item["description"] = campos["description"]
+    except KeyError:
+        pass
+       
 
     return item
 

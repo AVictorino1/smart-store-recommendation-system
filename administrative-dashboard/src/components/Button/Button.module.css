@@ -1,0 +1,22 @@
+.upload{
+    color: white;
+    font-family: system-ui;
+    border-radius: 50px;
+    padding: 15px;
+    background-color: rgb(39, 27, 61);
+    border: None;
+}
+
+
+.upload:focus{
+    background-color: rgba(255, 255, 255, 0.747);
+    border:10px;
+    color: black;
+}
+
+.upload:hover{
+    color: white;
+    background-color: rgba(39, 27, 80, 0.507);
+    border-radius: 50px;
+
+}

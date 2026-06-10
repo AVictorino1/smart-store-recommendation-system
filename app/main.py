@@ -3,7 +3,17 @@ from fastapi.responses import JSONResponse
 from app.routes.products import router as products_router
 from app.routes.recommendations import router as recommendation_router
 from app.core.exceptions import NotFoundError
+from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
+
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(products_router)
 app.include_router(recommendation_router)

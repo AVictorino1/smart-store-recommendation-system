@@ -1,0 +1,45 @@
+.tableTitle{
+    
+    border-color: black;
+
+}
+
+.products{
+    width: 100%;
+    border-collapse: collapse;  /* elimina el espacio entre celdas */
+    font-size: 14px;
+}
+
+.th {
+    background-color: #f4f4f4;
+    padding: 10px 16px;
+    text-align: center;
+    font-weight: 600;
+    
+}
+
+.th:first-child{
+    border-radius: 23px 0 0 23px;
+
+}
+
+.th:last-child{
+    border-radius: 0 23px 23px 0;
+}
+
+.th:hover{
+    background-color: #f9f9f9;  /* highlight al pasar el mouse */
+    cursor: pointer;
+}
+
+
+.td {
+    padding: 10px 16px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+}
+
+.row:hover {
+    background-color: #f9f9f9;  /* highlight al pasar el mouse */
+    cursor: pointer;
+}

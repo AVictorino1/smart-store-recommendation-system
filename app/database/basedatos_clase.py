@@ -1,36 +1,17 @@
 import sqlite3
 import os
 import random
+import json
+import pandas as pd
 from app.database.sample_generator import generate_complex_strings
+from app.database.init_db import generate_item
+from app.database.sample_generator import generate_complex_strings
+from datetime import datetime, timedelta
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "database.db")
 
-
-db_categories = ["name",
-        "category",
-        "subcategory",
-        "age_group",
-        "gender",
-            "fabric",
-            "color",
-            "style",
-            "fit",
-            "usage",
-            "description",
-            "tags",
-            "brand",
-            "price"]
-def main():
-    init_db(DB_PATH)
-
-def init_db(DB_PATH):
-
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    create_table(cursor, conn)
-    categories= {
+categories= {
                 "tops": {
                     "subcategories": {
                         "tshirt": {
@@ -415,120 +396,829 @@ def init_db(DB_PATH):
                 }
             }
 
-    insert_data(categories, cursor, conn)
-    cursor.execute("SELECT * FROM products;")
-    rows = cursor.fetchall()
-    conn.close()
+def init_db(DB_PATH):
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+
+    #PRODUCTOS
+    tabla_productos = """CREATE TABLE IF NOT EXISTS productos(
+        producto_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name VARCHAR(50), 
+        categoria_id INT, 
+        subcategoria_id INT, 
+        age_group VARCHAR(50) NOT NULL, 
+        genero VARCHAR(50) NOT NULL, 
+        tipo_tela VARCHAR(50) NOT NULL, 
+        color VARCHAR(50) NOT NULL, 
+        estilo VARCHAR(50) NOT NULL, 
+        fit VARCHAR(50) NOT NULL, 
+        uso VARCHAR(50) NOT NULL, 
+        descripcion VARCHAR(100), 
+        tags VARCHAR(100), 
+        marca_id INT NOT NULL, 
+        price FLOAT(3),
+        proveedor_id INT,
+        FOREIGN KEY (categoria_id) REFERENCES categorias(categoria_id),
+        FOREIGN KEY (subcategoria_id) REFERENCES subcategorias(subcategoria_id),
+        FOREIGN KEY (marca_id) REFERENCES marcas(marca_id),
+        FOREIGN KEY (proveedor_id) REFERENCES proveedores(proveedor_id)
+        );"""
+
+    #CLIENTES
+    tabla_clientes = """
+    CREATE TABLE IF NOT EXISTS clientes(
+        cliente_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nombre VARCHAR(30) NOT NULL,
+        apellido VARCHAR(30) NOT NULL,
+        email VARCHAR(30) NOT NULL,
+        telefono VARCHAR(40) NOT NULL,
+        fecha_registro DATE NOT NULL
+    );
+
+    """
+
+    #VENTAS
+    tabla_ventas = """
+    CREATE TABLE IF NOT EXISTS ventas(
+        venta_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        cliente_id INT NOT NULL,
+        fecha DATE NOT NULL,
+        total FLOAT(4) NOT NULL,
+        estado VARCHAR(30) NOT NULL,
+        metodo_pago_id INT NOT NULL,
+        FOREIGN KEY (cliente_id) REFERENCES clientes(cliente_id),
+        FOREIGN KEY (metodo_pago_id) REFERENCES metodo_pago(metodo_id)
+    );
+
+    """
+
+    #DETALLE VENTA
+    tabla_detalle_ventas = """
+    CREATE TABLE IF NOT EXISTS detalle_ventas(
+        detalle_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        venta_id INT NOT NULL,
+        producto_id INT NOT NULL,
+        cantidad INT NOT NULL,
+        precio_unitario FLOAT(3) NOT NULL,
+        subtotal FLOAT(3),
+        FOREIGN KEY (venta_id) REFERENCES ventas(venta_id),
+        FOREIGN KEY (producto_id) REFERENCES productos(producto_id)
+
+    );
+
+
+    """
+
+    #METODOS DE PAGO
+    tabla_metodo_pago = """
+    CREATE TABLE IF NOT EXISTS metodo_pago(
+        metodo_id  INTEGER PRIMARY KEY AUTOINCREMENT,
+        metodo VARCHAR(30)
+    );
+    """
+
+    #SUBCATEGORIAS PRODUCTOS
+    tabla_categorias = """CREATE TABLE IF NOT EXISTS categorias(
+    categoria_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    categoria VARCHAR(30));"""
+
+    #SUBCATEGORIAS
+    tabla_subcategorias = """
+    CREATE TABLE IF NOT EXISTS subcategorias(
+    subcategoria_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    subcategoria VARCHAR(30),
+    categoria_id INT NOT NULL,
+
+    FOREIGN KEY (categoria_id)
+    REFERENCES categorias(categoria_id));
+    """
+
+    #MARCAS
+    tabla_marcas = """
+    CREATE TABLE IF NOT EXISTS marcas(
+        marca_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        marca VARCHAR(30));
+    """
+
+    #INVENTARIO
+    tabla_inventario = """
+    CREATE TABLE IF NOT EXISTS inventario(
+        inventario_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        producto_id INT,
+        cantidad INT,
+        FOREIGN KEY (producto_id) REFERENCES productos(producto_id));
+    """
+
+    #DIRECCIONES
+    tabla_direcciones = """
+    CREATE TABLE IF NOT EXISTS direcciones(
+        direccion_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        direccion VARCHAR(60),
+        cliente_id INT,
+        FOREIGN KEY (cliente_id) REFERENCES clientes(cliente_id)
+    );
+    """
+
+    #ENVIO
+    tabla_envios = """
+    CREATE TABLE IF NOT EXISTS envios(
+        envios_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        venta_id INT,
+        fecha_envio DATE,
+        fecha_entrega DATE,
+        estado VARCHAR(30),
+        direccion_id INT,
+        FOREIGN KEY (venta_id) REFERENCES ventas(venta_id),
+        FOREIGN KEY (direccion_id) REFERENCES direcciones(direccion_id));
+    """
+
+    #Empleados
+    tabla_empleados = """
+    CREATE TABLE IF NOT EXISTS empleados(
+        empleado_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nombre VARCHAR(30) NOT NULL,
+        apellido VARCHAR(30) NOT NULL,
+        email VARCHAR(50),
+        cargo VARCHAR(30),
+        fecha_contratacion DATE
+    );
+    """
+
+    #Proveedor
+    tabla_proveedores = """
+    CREATE TABLE IF NOT EXISTS proveedores(
+        proveedor_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nombre VARCHAR(50) NOT NULL,
+        telefono VARCHAR(20),
+        email VARCHAR(50)
+    );
+    """
+
+    cursor.execute(tabla_productos)
+    cursor.execute(tabla_clientes)
+    cursor.execute(tabla_ventas)
+    cursor.execute(tabla_detalle_ventas)
+    cursor.execute(tabla_metodo_pago)
+    cursor.execute(tabla_categorias)
+    cursor.execute(tabla_subcategorias)
+    cursor.execute(tabla_marcas)
+    cursor.execute(tabla_inventario)
+    cursor.execute(tabla_direcciones)
+    cursor.execute(tabla_envios)
+    cursor.execute(tabla_empleados)
+    cursor.execute(tabla_proveedores)
 
 def delete_db(DB_PATH):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    cursor.execute("DROP TABLE products;")
+    #cursor.execute("DROP TABLE productos;")
+    cursor.execute("DROP TABLE categorias;")
+    cursor.execute("DROP TABLE subcategorias;")
+    cursor.execute("DROP TABLE marcas;")
+    cursor.execute("DROP TABLE proveedores;")
+    cursor.execute("DROP TABLE empleados;")
+    cursor.execute("DROP TABLE clientes;")
+    cursor.execute("DROP TABLE ventas;")
+    cursor.execute("DROP TABLE detalle_ventas;")
+    cursor.execute("DROP TABLE metodo_pago;")
+    cursor.execute("DROP TABLE inventario;")
+    cursor.execute("DROP TABLE direcciones;")
+    cursor.execute("DROP TABLE envios;")
     conn.commit()
 
-def generate_item(categories):
-    category = random.choice(list(categories.keys()))
-    subcat_key = random.choice(list(categories[category]["subcategories"].keys()))
-    subcat = categories[category]["subcategories"][subcat_key]
+def insert_data(DB_PATH):
 
-    gender  = random.choice(subcat["allowed_genders"])   
-    fabric  = random.choice(subcat["allowed_fabrics"])   
-    style   = random.choice(subcat["styles"])
-    fit     = random.choice(subcat["fit"])
-    usage   = random.choice(subcat["usage"])
-    brand = random.choice(list(subcat["brands"].keys()))
-    price_range = subcat["brands"][brand]
-    price = random.randrange(price_range[0], price_range[1])
-    age_group = random.choice(categories[category]["age_group"])
-    color   = random.choice(categories[category]["colors"])
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
 
+    with open(
+        "datos_tienda.json",
+        "r",
+        encoding="utf-8"
+        ) as f:
 
-   
-    return {"name":None,
-        "category": category,
-        "subcategory": subcat_key,
-        "age_group": age_group,
-        "gender": gender,
-            "fabric":fabric,
-            "color": color,
-            "style": style,
-            "fit": fit,
-            "usage": usage,
-            "description": None,
-            "tags": None,
-            "brand": brand,
-            "price": price}
+        datos = json.load(f)
 
-def create_table(cursor, conn):
-    cursor.execute("""CREATE TABLE IF NOT EXISTS products(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name VARCHAR(50), 
-    category VARCHAR(50) NOT NULL, 
-    subcategory VARCHAR(50) NOT NULL, 
-    age_group VARCHAR(50) NOT NULL, 
-    gender VARCHAR(50) NOT NULL, 
-    fabric VARCHAR(50) NOT NULL, 
-    color VARCHAR(50) NOT NULL, 
-    style VARCHAR(50) NOT NULL, 
-    fit VARCHAR(50) NOT NULL, 
-    usage VARCHAR(50) NOT NULL, 
-    description VARCHAR(100), 
-    tags VARCHAR(100), 
-    brand VARCHAR(50), 
-    price FLOAT(3))""")
+    # ==========================
+    # METODOS DE PAGO
+    # ==========================
+
+    for metodo in datos["metodos_pago"]:
+
+        cursor.execute(
+            """
+            INSERT INTO metodo_pago(
+                metodo_id,
+                metodo
+            )
+            VALUES (?, ?)
+            """,
+            (
+                metodo["metodo_id"],
+                metodo["metodo"]
+            )
+        )
+
+    # ==========================
+    # CLIENTES
+    # ==========================
+
+    for cliente in datos["clientes"]:
+
+        cursor.execute(
+            """
+            INSERT INTO clientes(
+                nombre,
+                apellido,
+                email,
+                telefono,
+                fecha_registro
+            )
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (
+                cliente["nombre"],
+                cliente["apellido"],
+                cliente["email"],
+                cliente["telefono"],
+                cliente["fecha_registro"]
+            )
+        )
+
+    # ==========================
+    # DIRECCIONES
+    # ==========================
+
+    for direccion in datos["direcciones"]:
+
+        cursor.execute(
+            """
+            INSERT INTO direcciones(
+                direccion_id,
+                direccion,
+                cliente_id
+            )
+            VALUES (?, ?, ?)
+            """,
+            (
+                direccion["direccion_id"],
+                direccion["direccion"],
+                direccion["cliente_id"]
+            )
+        )
+
+    # ==========================
+    # EMPLEADOS
+    # ==========================
+
+    for empleado in datos["empleados"]:
+
+        cursor.execute(
+            """
+            INSERT INTO empleados(
+                nombre,
+                apellido,
+                email,
+                cargo,
+                fecha_contratacion
+            )
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (
+                empleado["nombre"],
+                empleado["apellido"],
+                empleado["email"],
+                empleado["cargo"],
+                empleado["fecha_contratacion"]
+            )
+        )
+
+    # ==========================
+    # PROVEEDORES
+    # ==========================
+
+    for proveedor in datos["proveedores"]:
+
+        cursor.execute(
+            """
+            INSERT INTO proveedores(
+                nombre,
+                telefono,
+                email
+            )
+            VALUES (?, ?, ?)
+            """,
+            (
+                proveedor["nombre"],
+                proveedor["telefono"],
+                proveedor["email"]
+            )
+        )
+
+    
+        # =====================================================
+    # INVENTARIO
+    # =====================================================
+
+    cursor.execute("""
+        SELECT producto_id
+        FROM productos
+    """)
+
+    productos_ids = cursor.fetchall()
+
+    for producto_id, in productos_ids:
+
+        cursor.execute(
+            """
+            INSERT INTO inventario(
+                producto_id,
+                cantidad
+            )
+            VALUES (?, ?)
+            """,
+            (
+                producto_id,
+                random.randint(10, 200)
+            )
+        )
+
+    # =====================================================
+    # OBTENER PRODUCTOS REALES
+    # =====================================================
+
+    cursor.execute("""
+        SELECT producto_id, price
+        FROM productos
+    """)
+
+    productos = cursor.fetchall()
+
+    # =====================================================
+    # OBTENER CLIENTES
+    # =====================================================
+
+    cursor.execute("""
+        SELECT cliente_id
+        FROM clientes
+    """)
+
+    clientes = [row[0] for row in cursor.fetchall()]
+
+    # =====================================================
+    # OBTENER DIRECCIONES
+    # =====================================================
+
+    cursor.execute("""
+        SELECT direccion_id, cliente_id
+        FROM direcciones
+    """)
+
+    direcciones = cursor.fetchall()
+
+    direcciones_por_cliente = {}
+
+    for direccion_id, cliente_id in direcciones:
+
+        if cliente_id not in direcciones_por_cliente:
+            direcciones_por_cliente[cliente_id] = []
+
+        direcciones_por_cliente[cliente_id].append(
+            direccion_id
+        )
+
+    # =====================================================
+    # GENERAR VENTAS + DETALLE_VENTAS + ENVIOS
+    # =====================================================
+
+    detalle_id = 1
+    envio_id = 1
+
+    for venta_id in range(1, 201):
+
+        cliente_id = random.choice(clientes)
+
+        fecha_compra = (
+            datetime.now()
+            - timedelta(days=random.randint(0, 365))
+        )
+
+        estado_venta = random.choice([
+            "Pendiente",
+            "Procesando",
+            "Enviado",
+            "Entregado"
+        ])
+
+        metodo_pago_id = random.randint(1, 3)
+
+        total_venta = 0
+
+        detalles = []
+
+        cantidad_items = random.randint(1, 5)
+
+        for _ in range(cantidad_items):
+
+            producto_id, precio = random.choice(
+                productos
+            )
+
+            cantidad = random.randint(1, 3)
+
+            subtotal = round(
+                precio * cantidad,
+                2
+            )
+
+            total_venta += subtotal
+
+            detalles.append(
+                (
+                    detalle_id,
+                    venta_id,
+                    producto_id,
+                    cantidad,
+                    precio,
+                    subtotal
+                )
+            )
+
+            detalle_id += 1
+
+        # =====================
+        # INSERTAR VENTA
+        # =====================
+
+        cursor.execute(
+            """
+            INSERT INTO ventas(
+                venta_id,
+                cliente_id,
+                fecha,
+                total,
+                estado,
+                metodo_pago_id
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (
+                venta_id,
+                cliente_id,
+                fecha_compra.strftime("%Y-%m-%d"),
+                round(total_venta, 2),
+                estado_venta,
+                metodo_pago_id
+            )
+        )
+
+        # =====================
+        # INSERTAR DETALLES
+        # =====================
+
+        for detalle in detalles:
+
+            cursor.execute(
+                """
+                INSERT INTO detalle_ventas(
+                    detalle_id,
+                    venta_id,
+                    producto_id,
+                    cantidad,
+                    precio_unitario,
+                    subtotal
+                )
+                VALUES (?, ?, ?, ?, ?, ?)
+                """,
+                detalle
+            )
+
+        # =====================
+        # GENERAR ENVIO
+        # =====================
+
+        direccion_id = random.choice(
+            direcciones_por_cliente[cliente_id]
+        )
+
+        fecha_envio = fecha_compra + timedelta(
+            days=random.randint(1, 3)
+        )
+
+        fecha_entrega = fecha_envio + timedelta(
+            days=random.randint(2, 7)
+        )
+
+        estado_envio = random.choice([
+            "Preparando",
+            "En tránsito",
+            "Entregado"
+        ])
+
+        cursor.execute(
+            """
+            INSERT INTO envios(
+                envios_id,
+                venta_id,
+                fecha_envio,
+                fecha_entrega,
+                estado,
+                direccion_id
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (
+                envio_id,
+                venta_id,
+                fecha_envio.strftime("%Y-%m-%d"),
+                fecha_entrega.strftime("%Y-%m-%d"),
+                estado_envio,
+                direccion_id
+            )
+        )
+
+        envio_id += 1
+    
+
+    # ==========================
+    # GUARDAR
+    # ==========================
 
     conn.commit()
 
-def insert_data(categories, cursor, conn):
-    for _ in range (0,50):
+    print("Datos insertados correctamente.")
+
+    conn.close()
+
+def poblar_catalogo(categories):
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    # =====================
+    # CATEGORIAS
+    # =====================
+
+    categoria_ids = {}
+
+    for categoria in categories.keys():
+
+        cursor.execute(
+            """
+            INSERT INTO categorias(categoria)
+            VALUES(?)
+            """,
+            (categoria,)
+        )
+
+        categoria_ids[categoria] = cursor.lastrowid
+
+    # =====================
+    # SUBCATEGORIAS
+    # =====================
+
+    for categoria, categoria_data in categories.items():
+
+        categoria_id = categoria_ids[categoria]
+
+        for subcategoria in categoria_data["subcategories"].keys():
+
+            cursor.execute(
+                """
+                INSERT INTO subcategorias(
+                    subcategoria,
+                    categoria_id
+                )
+                VALUES (?, ?)
+                """,
+                (
+                    subcategoria,
+                    categoria_id
+                )
+            )
+
+    # =====================
+    # MARCAS
+    # =====================
+
+    marcas = set()
+
+    for categoria_data in categories.values():
+
+        for subcategoria_data in categoria_data["subcategories"].values():
+
+            for marca in subcategoria_data["brands"].keys():
+
+                marcas.add(marca)
+
+    for marca in sorted(marcas):
+
+        cursor.execute(
+            """
+            INSERT INTO marcas(marca)
+            VALUES(?)
+            """,
+            (marca,)
+        )
+
+    conn.commit()
+
+    print(
+        f"Categorías: {len(categoria_ids)} | "
+        f"Subcategorías: {sum(len(c['subcategories']) for c in categories.values())} | "
+        f"Marcas: {len(marcas)}"
+    )
+
+def insert_products(categories, cantidad=100):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    # ==========================
+    # CARGAR IDS DE CATEGORIAS
+    # ==========================
+
+    cursor.execute("""
+        SELECT categoria_id, categoria
+        FROM categorias
+    """)
+
+    categorias_db = {
+        nombre: categoria_id
+        for categoria_id, nombre in cursor.fetchall()
+    }
+
+    # ==========================
+    # CARGAR IDS DE SUBCATEGORIAS
+    # ==========================
+
+    cursor.execute("""
+        SELECT subcategoria_id, subcategoria
+        FROM subcategorias
+    """)
+
+    subcategorias_db = {
+        nombre: subcategoria_id
+        for subcategoria_id, nombre in cursor.fetchall()
+    }
+
+    # ==========================
+    # CARGAR IDS DE MARCAS
+    # ==========================
+
+    cursor.execute("""
+        SELECT marca_id, marca
+        FROM marcas
+    """)
+
+    marcas_db = {
+        nombre: marca_id
+        for marca_id, nombre in cursor.fetchall()
+    }
+
+    # ==========================
+    # CARGAR PROVEEDORES
+    # ==========================
+
+    cursor.execute("""
+        SELECT proveedor_id
+        FROM proveedores
+    """)
+
+    proveedores = [
+        row[0]
+        for row in cursor.fetchall()
+    ]
+
+    if not proveedores:
+        raise Exception(
+            "No hay proveedores registrados."
+        )
+
+    # ==========================
+    # GENERAR PRODUCTOS
+    # ==========================
+
+    for _ in range(cantidad):
+
         item = generate_item(categories)
-        complex_str = generate_complex_strings(item)
-        name, tags, description = complex_str["name"], str(complex_str["tags"]), complex_str["description"]
-        item["name"], item["tags"], item["description"] = name, tags, description
-        cursor.execute("""INSERT INTO products(name,category,
-        subcategory,
-        age_group,
-        gender,
-        fabric,
-        color,
-            style,
-            fit,
-            usage,
-            description,
-            tags,
-                brand,
-                price) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);""",
-        (item["name"],
-        item["category"],
-        item["subcategory"],
-        item["age_group"],
-        item["gender"],
-        item["fabric"],
-        item["color"],
-        item["style"],
-        item["fit"],
-        item["usage"],
-        item["description"],
-        item["tags"],
-        item["brand"],
-        item["price"]))
 
+        complex_str = generate_complex_strings(item)
+
+        item["name"] = complex_str["name"]
+        item["tags"] = str(complex_str["tags"])
+        item["description"] = complex_str["description"]
+
+        categoria_id = categorias_db[item["category"]]
+
+        subcategoria_id = subcategorias_db[
+            item["subcategory"]
+        ]
+
+        marca_id = marcas_db[
+            item["brand"]
+        ]
+
+        proveedor_id = random.choice(
+            proveedores
+        )
+
+        cursor.execute(
+            """
+            INSERT INTO productos(
+                name,
+                categoria_id,
+                subcategoria_id,
+                age_group,
+                genero,
+                tipo_tela,
+                color,
+                estilo,
+                fit,
+                uso,
+                descripcion,
+                tags,
+                marca_id,
+                price,
+                proveedor_id
+            )
+            VALUES(
+                ?,?,?,?,?,?,
+                ?,?,?,?,?,?,
+                ?,?,?
+            )
+            """,
+            (
+                item["name"],
+                categoria_id,
+                subcategoria_id,
+                item["age_group"],
+                item["gender"],
+                item["fabric"],
+                item["color"],
+                item["style"],
+                item["fit"],
+                item["usage"],
+                item["description"],
+                item["tags"],
+                marca_id,
+                item["price"],
+                proveedor_id
+            )
+        )
 
     conn.commit()
 
-def add_price(item):
-    return item
+    print(
+        f"{cantidad} productos insertados correctamente."
+    )
 
-if __name__ == "__main__":
-    main()
+def show_data(DB_PATH):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM productos where producto_id = 70;")
+    
+    
+    rows = cursor.fetchall()
+    print(rows)
+    conn.close()
+
+def export():
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    tablas = [
+        "categorias",
+        "subcategorias",
+        "marcas",
+        "proveedores",
+        "clientes",
+        "direcciones",
+        "empleados",
+        "productos",
+        "inventario",
+        "metodo_pago",
+        "ventas",
+        "detalle_ventas",
+        "envios"
+    ]
+
+    for tabla in tablas:
+        df = pd.read_sql_query(f"SELECT * FROM {tabla}", conn)
+        df.to_csv(f"{tabla}.csv", index=False)
+
+    conn.close()
 
 
+show_data(DB_PATH)
+export()
+#delete_db(DB_PATH)
+#init_db(DB_PATH)
+#insert_data(DB_PATH)
+#poblar_catalogo(categories)
 
-
-
-
-
-
-
+#insert_products(categories, 100)
 

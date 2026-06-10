@@ -1,0 +1,58 @@
+.Header{
+    background-color: rgba(39, 27, 80, 0.089);
+    border-radius: 23px;
+}
+
+.Header h1{
+    color: white;
+    background-color: rgb(39, 27, 80);
+    padding: 20px;
+    margin: 0;
+    text-align: left;
+    font-size: 16px;
+    letter-spacing: -0.5px;
+}
+
+.Header .main_dashboard{
+    font-family: system-ui;
+    font-weight: 500;
+}
+.Header ul{
+    list-style-type: none;
+    margin: 0;
+    overflow: hidden;
+    justify-content: center;
+    display: flex;
+}
+.Header ul li{
+    float: left;
+    padding: 0px 50px 0px; 
+}
+.Header ul li a{
+    color: rgba(0, 0, 0, 0.842);
+    display: block;
+    padding: 14px 16px;
+    text-align: center;
+    text-decoration: none;
+    margin: 10px;
+
+}
+.Header ul li a:hover{
+    color: white;
+    background-color: rgba(39, 27, 80, 0.089);
+    border-radius: 50px;
+
+}
+
+.Header ul li a:active{
+    background-color: rgb(39, 27, 80);
+}
+
+.Header ul li a:focus{
+    background-color: rgba(39, 27, 80, 0.473);
+    color: rgb(39, 27, 80);
+    border-radius: 50px;
+}
+
+
+
