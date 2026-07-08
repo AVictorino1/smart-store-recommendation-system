@@ -46,7 +46,7 @@ def build_weights_vector (feature_names, n_embeddings_dims=1024):
     category_weights={
         "subcategory": 4.0,
         "style":2.5,
-        "gender":3.0,
+        "gender":6.0,
         "usage":2.0,
         "fit":2.0,
         "fabric":3.0,

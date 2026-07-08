@@ -5,7 +5,8 @@ from app.database.sample_generator import generate_complex_strings
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "database.db")
-
+conn = sqlite3.connect(DB_PATH)
+cursor = conn.cursor()
 
 db_categories = ["name",
         "category",
@@ -22,8 +23,15 @@ db_categories = ["name",
             "brand",
             "price"]
 def main():
-    init_db(DB_PATH)
+    #init_db(DB_PATH)
 
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM conversation_history;")
+    rows = cursor.fetchall()
+    print(rows)
+    conn.close()
+    
 def init_db(DB_PATH):
 
     conn = sqlite3.connect(DB_PATH)
@@ -415,9 +423,10 @@ def init_db(DB_PATH):
                 }
             }
 
-    insert_data(categories, cursor, conn)
+    #insert_data(categories, cursor, conn)
+    insert_business_info(cursor, conn)
     cursor.execute("SELECT * FROM products;")
-    rows = cursor.fetchall()
+    #rows = cursor.fetchall()
     conn.close()
 
 def delete_db(DB_PATH):
@@ -478,6 +487,27 @@ def create_table(cursor, conn):
     brand VARCHAR(50), 
     price FLOAT(3))""")
 
+    # tabla de información del negocio
+    cursor.execute("""CREATE TABLE IF NOT EXISTS business_info(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    business_name VARCHAR(100) NOT NULL,
+    business_type VARCHAR(50),
+    payment_methods TEXT,
+    shipping_info TEXT,
+    return_policy TEXT,
+    schedule TEXT,
+    contact TEXT,
+    welcome_message TEXT)""")
+
+    # tabla de historial de conversaciones
+    cursor.execute("""CREATE TABLE IF NOT EXISTS conversation_history(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    phone_number VARCHAR(20) NOT NULL,
+    role VARCHAR(10) NOT NULL,
+    content TEXT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)""")
+
+
     conn.commit()
 
 def insert_data(categories, cursor, conn):
@@ -517,11 +547,43 @@ def insert_data(categories, cursor, conn):
 
     conn.commit()
 
-def add_price(item):
-    return item
+def insert_business_info(cursor, conn):
+    cursor.execute("SELECT COUNT(*) FROM business_info")
+    count = cursor.fetchone()[0]
+    
+    if count == 0:  # solo inserta si no hay datos
+        cursor.execute("""INSERT INTO business_info(
+            business_name, business_type, payment_methods,
+            shipping_info, return_policy, schedule, contact, welcome_message)
+            VALUES (?,?,?,?,?,?,?,?)""",
+            (
+                "Smart Store",
+                "ropa",
+                "Efectivo, transferencia bancaria, tarjeta de crédito",
+                "Envíos a todo el país. Tiempo de entrega 3-5 días hábiles. Envío gratis en compras mayores a $50.",
+                "Aceptamos devoluciones dentro de los 7 días posteriores a la compra con el producto en perfecto estado.",
+                "Lunes a Viernes 9am-6pm, Sábados 9am-2pm",
+                "WhatsApp: +50412345678",
+                "¡Hola! Bienvenido a Smart Store. ¿En qué puedo ayudarte hoy?"
+            )
+        )
+        conn.commit()
+
+def migrate_add_image_url(cursor, conn):
+    try: 
+        cursor.execute("""
+        ALTER TABLE products ADD COLUMN image_url TEXT;
+        """)
+        conn.commit()
+    except sqlite3.OperationalError as e:
+        print(f"Ya existe o error: {e}")
+    finally:
+        conn.close()
+
+
 
 if __name__ == "__main__":
-    main()
+    migrate_add_image_url(cursor, conn)
 
 
 

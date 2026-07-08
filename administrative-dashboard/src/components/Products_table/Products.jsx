@@ -1,7 +1,9 @@
 import {useState, useEffect} from "react"
 import styles from './Products.module.css'
 import Dropdown from "../Dropdown/Dropdown.jsx"
-
+import {FaPen} from "react-icons/fa"
+import { BsPencilSquare } from "react-icons/bs";
+import EditModal from "../EditProductModal/EditProductModal";
 
 const orderOptions = [
         {label: "A-Z ", value : "ALPHA"},
@@ -11,11 +13,15 @@ const orderOptions = [
 
     ]
 
+
+
 function Products({category="Category", filter="all"}){
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const[error, setError] = useState(null);
     const [order, setOrder] = useState("ALPHA");
+    const [showModal, setShowModal] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
 
 
     useEffect(() => {
@@ -64,6 +70,18 @@ function Products({category="Category", filter="all"}){
             break;
     };
 
+    useEffect(() => {
+        if (showModal){
+            document.body.style.overflow = "hidden";
+        }
+        else{
+            document.body.style.overflow = "";
+        }
+
+         return () => {
+        document.body.style.overflow = ""
+        }
+    }, [showModal])
     if (loading) return <p> Cargando productos...</p>
     if (error) return <p>Erro: {error}</p>
 
@@ -71,39 +89,46 @@ function Products({category="Category", filter="all"}){
     
 
     return (<>
-    <h3 className={styles.tableTitle}>Tienda de {category}</h3>
+    {showModal && <EditModal close={() => setShowModal(false)} product={selectedProduct}></EditModal>}
+    
     <br></br>
-    <Dropdown  label="Ordenar" options={orderOptions} onSelect={setOrder}></Dropdown>
-    <table className={styles.products}>
-        <thead>
-            <tr className={styles.columnsNames}>
-                <th className={styles.th}>ID</th>
-                <th className={styles.th}>Nombre</th>
-                <th className={styles.th}>Categoría</th>
-                <th className={styles.th}>Subcategoría</th>
-                <th className={styles.th}>Precio</th>
-                <th className={styles.th}>Marca</th>
-                <th className={styles.th}>Color</th>
-                <th className={styles.th}>Description</th>
+    <div className = {styles.divtabla}>
+        <Dropdown  label="Ordenar" options={orderOptions} onSelect={setOrder} className ={styles.filtrosd}></Dropdown>
+        <table className={styles.products}>
+            <thead>
+                <tr className={styles.columnsNames}>
+                    <th className={styles.th}>ID</th>
+                    <th className={styles.th}>Nombre</th>
+                    <th className={styles.th}>Categoría</th>
+                    <th className={styles.th}>Subcategoría</th>
+                    <th className={styles.th}>Precio</th>
+                    <th className={styles.th}>Marca</th>
+                    <th className={styles.th}>Color</th>
+                    <th className={styles.th}>Description</th>
+                    <th className={styles.th}></th>
 
-            </tr>
-        </thead>
-        
-        <tbody>
-            {processed.map(product => (
-                <tr className={styles.row} key={product.id}>
-                    <td className={styles.td}>{product.id}</td>
-                    <td className={styles.td}>{product.name}</td>
-                    <td className={styles.td}>{product.category}</td>
-                    <td className={styles.td}>{product.subcategory}</td>
-                    <td className={styles.td}>{product.price}</td>
-                    <td className={styles.td}>{product.brand}</td>
-                    <td className={styles.td}>{product.color}</td>
-                    <td className={styles.td}>{product.description}</td>
-                </tr> 
-            ))}
-        </tbody>
-    </table>
+                </tr>
+            </thead>
+            
+            <tbody>
+                {processed.map(product => (
+                    <tr className={styles.row} key={product.id}>
+                        <td className={styles.td}>{product.id}</td>
+                        <td className={styles.td}>{product.name}</td>
+                        <td className={styles.td}>{product.category}</td>
+                        <td className={styles.td}>{product.subcategory}</td>
+                        <td className={styles.td}>{product.price}</td>
+                        <td className={styles.td}>{product.brand}</td>
+                        <td className={styles.td}>{product.color}</td>
+                        <td className={styles.td}>{product.description}</td>
+                        <td className={styles.action}><BsPencilSquare className={styles.edit} onClick = {() => {setSelectedProduct(product); setShowModal(true); }}/></td>
+                        
+                    
+                    </tr> 
+                ))}
+            </tbody>
+        </table>
+    </div>
     <br></br>
     </>);
 }

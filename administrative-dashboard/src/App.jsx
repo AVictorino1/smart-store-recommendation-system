@@ -11,7 +11,6 @@ function App() {
     <>
     
       <Header/>
-      
       <Products items={products} category = "Ropa"/>
       <Button></Button>
       <Footer/>

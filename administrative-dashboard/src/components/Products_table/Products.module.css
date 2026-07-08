@@ -4,10 +4,19 @@
 
 }
 
+.divtabla{
+    padding: 40px ;
+}
+
+.filtrosd{
+    padding: 20px ;
+}
+
 .products{
     width: 100%;
     border-collapse: collapse;  /* elimina el espacio entre celdas */
     font-size: 14px;
+    
 }
 
 .th {
@@ -16,6 +25,10 @@
     text-align: center;
     font-weight: 600;
     
+}
+
+.td{
+    text-align: center;
 }
 
 .th:first-child{
@@ -42,4 +55,22 @@
 .row:hover {
     background-color: #f9f9f9;  /* highlight al pasar el mouse */
     cursor: pointer;
+}
+
+.action{
+    opacity: 0;
+    padding: 30px ;
+}
+
+.row:hover .action{
+    opacity: 1;
+}
+
+.edit{
+    color: rgb(124, 124, 124);
+    font-size: 2.0rem;
+}
+
+.edit:hover{
+    color: black;
 }

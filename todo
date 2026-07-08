@@ -1,7 +1,5 @@
-Tarea base de datos I:
-- Hacer más tablas y convertirlo en una base de datos relacional
-- Añadir tabla clientes, detalles venta, 
-
+IMPORTANT
+- Apply weights to new similarity function (whatsapp recommendations)
 
 RULED BASED
 - Review
@@ -15,25 +13,25 @@ Preprocessing
 - Apply permissions? if possible
 - Add recommender to endpoints
 - USE get_query_embedding for:
-    1. Client searches (from Whatsapp store)
+    1. Client searches (from Whatsapp store) DONE
     2. Owner searches (admin dashboard)
     3. Autocomplete for owner when he adds a new product or updates product
     4. Identify duplicates in database
-    5. Match outfits 
-    6. Client searches by descriptions
+    5. Match outfits/products 
+    6. Client searches by descriptions DONE
     7. Clustering (organize catalog by sections/similar products)
-    8. Filter useless queries from client
+    8. Filter useless queries from client DONE
 AUTOMATIC DATABASE:
 - User uploads images and the database is created automatically
 
 
-CNN MODEL
+CNN MODEL RECOMMENDER
 - start
 
 FRONT END
 - Organize ideas
 - This is supposed to be a tool
-- Connect front end with back end to display products from database
+- Connect front end with back end to display products from database DONE
 - Display products as a table (Don't display the whole database at once, dynamic displaying? Does that even exist?)
 - Let user (Business owner) modify database from this administrative dashboard
 - The user must be able to seach for a product in multiple ways (categories, ids, filters, publication date, images, descriptions (AI POWERED))

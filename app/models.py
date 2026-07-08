@@ -9,14 +9,14 @@ class Product(BaseModel):
     gender: str
     fabric: str
     color: str
-    style:str
-    fit:str
-    usage:str
-    description:str
-    tags:str
+    style: str
+    fit: str
+    usage: str
+    description: str
+    tags: str
     brand: Optional[str] = None
     price: float
-    
+    image_url: Optional[str] = None
 
     @field_validator("category")
     def not_empty(cls,value):
@@ -35,7 +35,6 @@ class Product(BaseModel):
     """
 
 class ProductUpdate(BaseModel):
-
     name: Optional[str] = None
     category: Optional[str] = None
     subcategory: Optional[str] = None
@@ -46,8 +45,8 @@ class ProductUpdate(BaseModel):
     style: Optional[str] = None
     fit: Optional[str] = None
     usage: Optional[str] = None
-
     description: Optional[str] = None
     tags: Optional[str] = None
     brand: Optional[str] = None
     price: Optional[float] = None
+    image_url: Optional[str] = None

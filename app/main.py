@@ -2,11 +2,11 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from app.routes.products import router as products_router
 from app.routes.recommendations import router as recommendation_router
+from app.routes.whatsapp import router as whatsapp_router
 from app.core.exceptions import NotFoundError
 from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
-
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -17,6 +17,7 @@ app.add_middleware(
 
 app.include_router(products_router)
 app.include_router(recommendation_router)
+app.include_router(whatsapp_router)
 
 @app.exception_handler(NotFoundError)
 def not_found_handler(request, exc):
