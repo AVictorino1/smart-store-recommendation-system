@@ -1,0 +1,17 @@
+/* UserIcon.module.css */
+.userIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.15);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.icon {
+    font-size: 30px;
+    color: white;
+}

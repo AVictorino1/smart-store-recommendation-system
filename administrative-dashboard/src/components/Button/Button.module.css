@@ -8,12 +8,6 @@
 }
 
 
-.upload:focus{
-    background-color: rgba(255, 255, 255, 0.747);
-    border:10px;
-    color: black;
-}
-
 .upload:hover{
     color: white;
     background-color: rgba(39, 27, 80, 0.507);

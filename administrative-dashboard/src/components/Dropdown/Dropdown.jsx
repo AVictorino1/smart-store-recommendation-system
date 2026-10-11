@@ -1,6 +1,7 @@
 import { useState } from "react"
+import styles from "./Dropdown.module.css"
 
-function Dropdown({ label, options, onSelect }) {
+function Dropdown({ label, options, onSelect, icon }) {
     const [open, setOpen] = useState(false)
     const [selected, setSelected] = useState(label)
 
@@ -11,22 +12,23 @@ function Dropdown({ label, options, onSelect }) {
     }
 
     return (
-        <div className="relative inline-block">
+        <div className={styles.wrapper}>
             <button
                 onClick={() => setOpen(!open)}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50"
+                title={label}
+                className={styles.trigger}
             >
-                {selected}
-                <span className={`transition-transform ${open ? "rotate-180" : ""}`}>▾</span>
+                {icon ? icon : <span className={styles.label}>{selected}</span>}
+                <span className={`${styles.arrow} ${open ? styles.arrowOpen : ""}`}></span>
             </button>
 
             {open && (
-                <ul className="absolute z-10 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
+                <ul className={styles.menu}>
                     {options.map(option => (
                         <li
                             key={option.value}
                             onClick={() => handleSelect(option)}
-                            className="px-4 py-2 text-sm hover:bg-gray-50 cursor-pointer first:rounded-t-lg last:rounded-b-lg"
+                            className={styles.menuItem}
                         >
                             {option.label}
                         </li>

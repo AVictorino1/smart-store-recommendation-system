@@ -50,3 +50,8 @@ class ProductUpdate(BaseModel):
     brand: Optional[str] = None
     price: Optional[float] = None
     image_url: Optional[str] = None
+
+class RegeneratedModel(BaseModel):
+    product: Product
+    fields: list
+

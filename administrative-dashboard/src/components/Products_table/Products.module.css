@@ -1,30 +1,95 @@
-.tableTitle{
-    
-    border-color: black;
-
-}
-
 .divtabla{
-    padding: 40px ;
+    padding: 0px;
+    font-family: system-ui;
 }
 
-.filtrosd{
-    padding: 20px ;
+/* --- Fila superior: pestañas a la izquierda + herramientas a la derecha --- */
+.topRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+/* --- Pestañas de filtro rápido (Todos / Reservados / Vendidos) --- */
+.filterTabs {
+    display: flex;
+    gap: 8px;
+}
+
+.tabButton {
+    border: none;
+    background: transparent;
+    padding: 8px 4px;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgb(120, 120, 120);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-right: 20px;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.tabButton:hover {
+    color: rgb(39, 27, 80);
+}
+
+.tabButtonActive {
+    color: rgb(39, 27, 80);
+    border-bottom: 2px solid rgb(39, 27, 80);
+    font-weight: 600;
+}
+
+/* --- Barra de herramientas (Ordenar / Filtros) --- */
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.iconButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    border: 1px solid rgb(235, 235, 235);
+    background-color: rgba(39, 27, 80, 0.06);
+    color: rgb(60, 60, 60);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.iconButton:hover {
+    background-color: rgba(39, 27, 80, 0.12);
+    color: rgb(39, 27, 80);
+}
+
+/* --- Tarjeta contenedora de la tabla --- */
+.tableCard {
+    background-color: white;
+    border-radius: 23px;
+    border: 1px solid rgb(235, 235, 235);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    padding: 8px;
 }
 
 .products{
     width: 100%;
-    border-collapse: collapse;  /* elimina el espacio entre celdas */
+    border-collapse: collapse;
     font-size: 14px;
-    
 }
 
 .th {
-    background-color: #f4f4f4;
-    padding: 10px 16px;
+    background-color: rgba(39, 27, 80, 0.06);
+    padding: 12px 16px;
     text-align: center;
     font-weight: 600;
-    
+    color: rgb(60, 60, 60);
 }
 
 .td{
@@ -32,19 +97,17 @@
 }
 
 .th:first-child{
-    border-radius: 23px 0 0 23px;
-
+    border-radius: 16px 0 0 16px;
 }
 
 .th:last-child{
-    border-radius: 0 23px 23px 0;
+    border-radius: 0 16px 16px 0;
 }
 
 .th:hover{
-    background-color: #f9f9f9;  /* highlight al pasar el mouse */
+    background-color: rgba(39, 27, 80, 0.1);
     cursor: pointer;
 }
-
 
 .td {
     padding: 10px 16px;
@@ -53,13 +116,13 @@
 }
 
 .row:hover {
-    background-color: #f9f9f9;  /* highlight al pasar el mouse */
+    background-color: rgba(39, 27, 80, 0.03);
     cursor: pointer;
 }
 
 .action{
     opacity: 0;
-    padding: 30px ;
+    padding: 30px;
 }
 
 .row:hover .action{
@@ -72,5 +135,137 @@
 }
 
 .edit:hover{
-    color: black;
+    color: rgb(39, 27, 80);
 }
+
+.descriptionCell {
+    text-align: left;
+    max-width: 280px;
+}
+
+.descriptionTruncated {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.descriptionFull {
+    display: block;
+    white-space: normal;
+    line-height: 1.4;
+}
+
+.descToggleHover {
+    display: none;
+    border: none;
+    background: transparent;
+    color: rgb(39, 27, 80);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 2px 0 0;
+}
+
+.descriptionCell:hover .descToggleHover {
+    display: block;
+}
+
+.descToggle {
+    display: block;
+    border: none;
+    background: transparent;
+    color: rgb(39, 27, 80);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 0 0;
+}
+
+.thCheckbox, .tdCheckbox {
+    width: 40px;
+    text-align: center;
+}
+
+.selectionBar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+.rightControls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.selectionCount {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgb(39, 27, 80);
+}
+
+.publishWrapper {
+    position: relative;
+}
+
+.publishButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: 20px;
+    border: none;
+    background-color: rgb(39, 27, 80);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    
+}
+
+.publishButton:hover:not(:disabled) {
+    background-color: rgb(58, 40, 116);
+}
+
+.publishButton:disabled {
+    background-color: rgb(220, 220, 220);
+    color: rgb(160, 160, 160);
+    cursor: not-allowed;
+}
+
+.channelIcon {
+    font-size: 15px;
+}
+
+.publishTooltip {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 200px;
+    background-color: rgb(40, 40, 40);
+    color: white;
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    z-index: 20;
+    text-align: center;
+}
+
+.publishWrapper:hover .publishTooltip {
+    display: block;
+}
+
+
+.image_logo{
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background-color: rgb(240, 240, 240);
+}
+
+

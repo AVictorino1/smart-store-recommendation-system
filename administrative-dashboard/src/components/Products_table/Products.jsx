@@ -1,9 +1,8 @@
-import {useState, useEffect} from "react"
+import { useState, useEffect } from "react"
 import styles from './Products.module.css'
-import Dropdown from "../Dropdown/Dropdown.jsx"
-import {FaPen} from "react-icons/fa"
-import { BsPencilSquare } from "react-icons/bs";
+import { BsPencilSquare, BsArrowDownUp, BsFunnel } from "react-icons/bs";
 import EditModal from "../EditProductModal/EditProductModal";
+import { FaWhatsapp, FaInstagram, FaFacebook, FaTiktok } from "react-icons/fa";
 
 const orderOptions = [
         {label: "A-Z ", value : "ALPHA"},
@@ -22,8 +21,8 @@ function Products({category="Category", filter="all"}){
     const [order, setOrder] = useState("ALPHA");
     const [showModal, setShowModal] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
-
-
+    const [expandedDescriptions, setExpandedDescriptions] = useState([])
+    const [selectedIds, setSelectedIds] = useState([]);
     useEffect(() => {
         fetch("http://localhost:8000/products")
         .then(res => {
@@ -45,7 +44,30 @@ function Products({category="Category", filter="all"}){
     }, [])
     let processed = [...products]
 
-    
+    function toggleSelect(id) {
+    setSelectedIds(prev =>
+        prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+    }
+
+    function toggleSelectAll() {
+        if (selectedIds.length === processed.length) {
+            setSelectedIds([]);
+        } else {
+            setSelectedIds(processed.map(p => p.id));
+        }
+    }
+
+    const isAllSelected = processed.length > 0 && selectedIds.length === processed.length;
+
+    function toggleDescriptions(id){
+        setExpandedDescriptions(prev => (prev.includes(id) ? prev.filter(x => x !== id):  [...prev, id]));
+    }
+
+    function updateProduct(updated){
+        setProducts(products.map(p => p.id === updated.id ? updated: p));
+        setSelectedProduct(updated);
+    }
     switch(order){
         case "ALPHA":
             processed.sort((a,b) => (a.name || "").localeCompare(b.name || ""));
@@ -89,45 +111,116 @@ function Products({category="Category", filter="all"}){
     
 
     return (<>
-    {showModal && <EditModal close={() => setShowModal(false)} product={selectedProduct}></EditModal>}
+    {showModal && <EditModal onSave={updated => {updateProduct(updated);}} close={() => setShowModal(false)} product={selectedProduct}></EditModal>}
     
     <br></br>
-    <div className = {styles.divtabla}>
-        <Dropdown  label="Ordenar" options={orderOptions} onSelect={setOrder} className ={styles.filtrosd}></Dropdown>
-        <table className={styles.products}>
-            <thead>
-                <tr className={styles.columnsNames}>
-                    <th className={styles.th}>ID</th>
-                    <th className={styles.th}>Nombre</th>
-                    <th className={styles.th}>Categoría</th>
-                    <th className={styles.th}>Subcategoría</th>
-                    <th className={styles.th}>Precio</th>
-                    <th className={styles.th}>Marca</th>
-                    <th className={styles.th}>Color</th>
-                    <th className={styles.th}>Description</th>
-                    <th className={styles.th}></th>
+    <div className={styles.divtabla}>
 
-                </tr>
-            </thead>
-            
-            <tbody>
-                {processed.map(product => (
-                    <tr className={styles.row} key={product.id}>
-                        <td className={styles.td}>{product.id}</td>
-                        <td className={styles.td}>{product.name}</td>
-                        <td className={styles.td}>{product.category}</td>
-                        <td className={styles.td}>{product.subcategory}</td>
-                        <td className={styles.td}>{product.price}</td>
-                        <td className={styles.td}>{product.brand}</td>
-                        <td className={styles.td}>{product.color}</td>
-                        <td className={styles.td}>{product.description}</td>
-                        <td className={styles.action}><BsPencilSquare className={styles.edit} onClick = {() => {setSelectedProduct(product); setShowModal(true); }}/></td>
-                        
-                    
-                    </tr> 
-                ))}
-            </tbody>
-        </table>
+        <div className={styles.topRow}>
+            <div className={styles.filterTabs}>
+                <button className={`${styles.tabButton} ${styles.tabButtonActive}`}>Todos</button>
+                <button className={styles.tabButton}>Publicados</button>
+                <button className={styles.tabButton}>Reservados</button>
+                <button className={styles.tabButton}>Vendidos</button>
+            </div>
+
+            <div className={styles.rightControls}>
+                {selectedIds.length > 0 && (
+                    <span className={styles.selectionCount}>{selectedIds.length} seleccionado(s)</span>
+                )}
+
+                <div className={styles.publishWrapper}>
+                    <button className={styles.publishButton} disabled={selectedIds.length === 0}>
+                        <FaWhatsapp className={styles.channelIcon} />
+                        <FaInstagram className={styles.channelIcon} />
+                        <FaFacebook className={styles.channelIcon} />
+                        <FaTiktok className={styles.channelIcon} />
+                        <span>Publicar</span>
+                    </button>
+
+                    {selectedIds.length === 0 && (
+                        <span className={styles.publishTooltip}>
+                            Debe seleccionar al menos un producto para publicar
+                        </span>
+                    )}
+                </div>
+
+                <div className={styles.toolbar}>
+                    <button className={styles.iconButton} title="Ordenar">
+                        <BsArrowDownUp />
+                    </button>
+                    <button className={styles.iconButton} title="Filtros">
+                        <BsFunnel />
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div className={styles.tableCard}>
+            <table className={styles.products}>
+                <thead>
+                    <tr className={styles.columnsNames}>
+                        <th className={`${styles.thCheckbox} ${styles.th}`}>
+                            <input
+                                type="checkbox"
+                                checked={isAllSelected}
+                                onChange={toggleSelectAll}
+                            />
+                        </th>
+                        <th className={styles.th}></th>
+                        <th className={styles.th}>Nombre</th>
+                        <th className={styles.th}>Precio</th>
+                        <th className={styles.th}>Marca</th>
+                        <th className={styles.th}>Color</th>
+                        <th className={styles.th}>Description</th>
+                        <th className={styles.th}></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {processed.map(product => (
+                        <tr className={styles.row} key={product.id}>
+                            <td className={styles.tdCheckbox}>
+                                <input
+                                    type="checkbox"
+                                    checked={selectedIds.includes(product.id)}
+                                    onChange={() => toggleSelect(product.id)}
+                                />
+                            </td>
+                            <td className={styles.td}>
+                                <img className={styles.image_logo} src={product.image_url}>
+                                </img>
+                                </td>
+                            <td className={styles.td}>{product.name}</td>
+                            <td className={styles.td}>{product.price}</td>
+                            <td className={styles.td}>{product.brand}</td>
+                            <td className={styles.td}>{product.color}</td>
+                            <td className={styles.td}>
+                                    <div className={styles.descriptionCell}>
+                                        {expandedDescriptions.includes(product.id) ? (
+                                            <>
+                                                <span className={styles.descriptionFull}>{product.description}</span>
+                                                <button className={styles.descToggle} onClick={() => toggleDescriptions(product.id)}>
+                                                    Mostrar menos
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span className={styles.descriptionTruncated}>{product.description}</span>
+                                                <button className={styles.descToggleHover} onClick={() => toggleDescriptions(product.id)}>
+                                                    Mostrar todo
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+                                </td>
+                            <td className={styles.action}><BsPencilSquare className={styles.edit} onClick={() => {console.log("CLICK DETECTADO"); setSelectedProduct(product); setShowModal(true); }}/></td>
+                        </tr> 
+                    ))}
+                </tbody>
+                
+            </table>
+        </div>
+
     </div>
     <br></br>
     </>);

@@ -1,0 +1,68 @@
+.wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.trigger {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    justify-content: center;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: 12px;
+    border: 1px solid rgb(235, 235, 235);
+    background-color: rgba(39, 27, 80, 0.06);
+    color: rgb(60, 60, 60);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.trigger:hover {
+    background-color: rgba(39, 27, 80, 0.12);
+    color: rgb(39, 27, 80);
+}
+
+.label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.arrow {
+    font-size: 11px;
+    transition: transform 0.2s;
+}
+
+.arrowOpen {
+    transform: rotate(180deg);
+}
+
+.menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    z-index: 10;
+    width: 180px;
+    background-color: white;
+    border: 1px solid rgb(235, 235, 235);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    list-style: none;
+    margin: 0;
+    padding: 4px;
+}
+
+.menuItem {
+    padding: 10px 12px;
+    font-size: 13px;
+    color: rgb(60, 60, 60);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.menuItem:hover {
+    background-color: rgba(39, 27, 80, 0.06);
+    color: rgb(39, 27, 80);
+}

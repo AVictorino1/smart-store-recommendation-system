@@ -17,6 +17,11 @@ def get_business_info():
         return map_business(row)
     return None
 
+def get_business_schema():
+    business = get_business_info()
+    return {"trigger_fields": business["trigger_fields"],
+        "regenerated_fields": business["regenerated_fields"]}
+
 def update_business_info(field: str, value: str):
     conn = get_connection()
     cursor = conn.cursor()

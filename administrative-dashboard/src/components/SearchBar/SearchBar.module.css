@@ -1,0 +1,43 @@
+/* SearchBar.module.css */
+.wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.searchBar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 720px;
+    padding: 12px 20px;
+    border-radius: 24px;
+    border: 1px solid rgb(218, 220, 224);
+    background-color: rgb(241, 243, 244);
+    transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.searchBar:focus-within {
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+}
+
+.icon {
+    font-size: 18px;
+    color: rgb(95, 99, 104);
+    flex-shrink: 0;
+}
+
+.input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 15px;
+    color: rgb(32, 33, 36);
+}
+
+.input::placeholder {
+    color: rgb(95, 99, 104);
+}

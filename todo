@@ -23,17 +23,20 @@ Preprocessing
     8. Filter useless queries from client DONE
 AUTOMATIC DATABASE:
 - User uploads images and the database is created automatically
+CREATE TEMPLATES
+LOGIN PAGE
+
+CREATE DATABASE PAGE
+
+PUBLISH NEW PRODUCTS ON SOCIAL MEDIA (FACEBOOK, INSTAGRAM, WHATSAPP)
 
 
 CNN MODEL RECOMMENDER
 - start
 
 FRONT END
-- Organize ideas
-- This is supposed to be a tool
 - Connect front end with back end to display products from database DONE
-- Display products as a table (Don't display the whole database at once, dynamic displaying? Does that even exist?)
-- Let user (Business owner) modify database from this administrative dashboard
+- Let user (Business owner) modify database from this administrative dashboard DONE
 - The user must be able to seach for a product in multiple ways (categories, ids, filters, publication date, images, descriptions (AI POWERED))
 - The user must be able to add new products
 - The user should be able to upload an excel database
@@ -41,6 +44,24 @@ FRONT END
 - Is it possible to modify a store based in whatsapp/instagram from a external website?
 - Is it possible to register a sale (whatsapp/instagram/facebook) and automatically update the database without user intervention?
 - AUTH for the owner
+
+IMPORT BUTTON, EXPORT BUTTON, ADD IMAGE LOGO TO EACH PRODUCT
+OTHER VISTA? CARDS
+
+PRINT BUTTON
+
+sleccion, CHANNELS (instagram, facebook, whatsapp, tiktok) YA
+
+customers
+notifications 
+
+ia icon
+
+status/stock on table
+estado: agotado, vendido, reservado
+Publicado aparte
+
+cantidad/inventario
 
 WHATSAPP API
 - start

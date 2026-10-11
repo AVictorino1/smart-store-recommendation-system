@@ -1,0 +1,100 @@
+.popupOverlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.popup {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 20px 50px rgba(0,0,0,.4);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+
+
+.popupTitle {
+    font-size: 17px;
+    font-weight: 600;
+    color: rgb(39,27,80);
+    margin: 0;
+}
+
+.popupMessage {
+    font-size: 14px;
+    color: rgb(80,80,80);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.popupButtons {
+    display: flex;
+    flex-direction: inline;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.popupButtonPrimary {
+    padding: 11px;
+    border: none;
+    border-radius: 10px;
+    background: rgb(39,27,80);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.popupButtonPrimaryActive {
+    padding: 11px;
+    border: none;
+    border-radius: 10px;
+    background: rgb(104, 103, 109);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.popupButtonPrimary:hover {
+    background: rgb(58,40,116);
+}
+
+.popupButtonSecondary {
+    padding: 11px;
+    border: none;
+    border-radius: 10px;
+    background: rgb(230,230,230);
+    color: rgb(60,60,60);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    transition: .2s;
+}
+
+.popupButtonSecondary:hover {
+    background: rgb(210,210,210);
+}
+
+.popupButtonDanger {
+    padding: 11px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: rgb(150,150,150);
+    cursor: pointer;
+    font-size: 13px;
+    transition: .2s;
+}
+
+.popupButtonDanger:hover {
+    color: rgb(236, 58, 58);
+}

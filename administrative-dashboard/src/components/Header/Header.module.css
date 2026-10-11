@@ -1,47 +1,78 @@
 .Header{
-    background-color: rgba(39, 27, 80, 0.089);
     border-radius: 23px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 64px;
+    pointer-events: none;
 }
 
 .Header h1{
     color: white;
-    background-color: rgb(39, 27, 80);
-    padding: 20px;
     margin: 0;
     text-align: left;
     font-size: 16px;
     letter-spacing: -0.5px;
 }
 
+
+.Header .topBar{
+    pointer-events: auto;
+}
+
+.Header .menu{
+    background-color: rgba(39, 27, 80, 0.089);
+    width: 220px;
+    height: 100vh;
+    border-radius: 0 0 0 23px;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    pointer-events: auto;
+}
+
 .Header .main_dashboard{
     font-family: system-ui;
     font-weight: 500;
+
 }
+
 .Header ul{
     list-style-type: none;
     margin: 0;
+    padding: 20px 0;
     overflow: hidden;
-    justify-content: center;
+    justify-content: flex-start;
     display: flex;
-}
-.Header ul li{
-    float: left;
-    padding: 0px 50px 0px; 
-}
-.Header ul li a{
-    color: rgba(0, 0, 0, 0.842);
-    display: block;
-    padding: 14px 16px;
-    text-align: center;
-    text-decoration: none;
-    margin: 10px;
+    flex-direction: column;
 
 }
+
+.Header ul li{
+    float: none;
+    padding: 0 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.Header ul li a{
+    color: rgba(0, 0, 0, 0.842);
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+    padding: 14px 16px;
+    text-decoration: none;
+    margin: 6px 0;
+}
+
 .Header ul li a:hover{
     color: white;
     background-color: rgba(39, 27, 80, 0.089);
     border-radius: 50px;
-
 }
 
 .Header ul li a:active{
@@ -54,5 +85,20 @@
     border-radius: 50px;
 }
 
+.topBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgb(39, 27, 80);
+    padding: 0 20px;
+    height: 64px;
+    box-sizing: border-box;
+}
 
+.newButtonWrapper {
+    padding: 16px 20px 0;
+}
 
+.navIcon {
+    font-size: 16px;
+}

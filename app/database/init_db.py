@@ -1,6 +1,7 @@
 import sqlite3
 import os
 import random
+import json
 from app.database.sample_generator import generate_complex_strings
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -497,7 +498,8 @@ def create_table(cursor, conn):
     return_policy TEXT,
     schedule TEXT,
     contact TEXT,
-    welcome_message TEXT)""")
+    welcome_message TEXT,
+    trigger_fields TEXT)""")
 
     # tabla de historial de conversaciones
     cursor.execute("""CREATE TABLE IF NOT EXISTS conversation_history(
@@ -580,10 +582,53 @@ def migrate_add_image_url(cursor, conn):
     finally:
         conn.close()
 
+def migrate_business_info(DB_PATH):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute("ALTER TABLE business_info ADD COLUMN trigger_fields TEXT")
+        print("Columna trigger_fields añadida")
+    except sqlite3.OperationalError as e:
+        print(f"trigger_fields: {e}")
+    
+    try:
+        cursor.execute("ALTER TABLE business_info ADD COLUMN regenerated_fields TEXT")
+        print("Columna regenerated_fields añadida")
+    except sqlite3.OperationalError as e:
+        print(f"regenerated_fields: {e}")
+    
+    finally:
+        conn.commit()
+        conn.close()
 
+
+def populate_business_fields(DB_PATH):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    
+    trigger_fields = json.dumps([
+        "color", "category", "subcategory", 
+        "brand", "style", "gender", "fabric"
+    ])
+    
+    regenerated_fields = json.dumps([
+        "name", "description", "tags"
+    ])
+    
+    cursor.execute("""
+        UPDATE business_info 
+        SET trigger_fields = ?, regenerated_fields = ?
+        WHERE id = 1
+    """, (trigger_fields, regenerated_fields))
+    
+    conn.commit()
+    conn.close()
+    print("Campos actualizados")
 
 if __name__ == "__main__":
-    migrate_add_image_url(cursor, conn)
+    migrate_business_info(DB_PATH)
+    populate_business_fields(DB_PATH)
 
 
 
